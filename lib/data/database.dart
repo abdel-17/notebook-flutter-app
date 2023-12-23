@@ -1,8 +1,7 @@
+import 'package:notebook/data/note.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-
-import './note.dart';
 
 class _NotebookDatabase {
   static const _name = "notebook.db";
@@ -16,13 +15,34 @@ class _NotebookDatabase {
 
   static _onCreate(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE ${Note.tableName} (
+      CREATE TABLE IF NOT EXISTS ${Note.tableName} (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT,
         content TEXT,
         created_at TEXT
       )
-  ''');
+    ''');
+
+    // TODO: remove sample data once "add note" functionality is added.
+    final sampleData = [
+      Note(
+        id: 1,
+        title: 'Note 1',
+        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        createdAt: DateTime.now(),
+      ),
+      Note(
+        id: 2,
+        title: 'Note 2',
+        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        createdAt: DateTime.now(),
+      ),
+    ];
+
+    for (final sample in sampleData) {
+      await db.insert(Note.tableName, sample.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    }
   }
 }
 
