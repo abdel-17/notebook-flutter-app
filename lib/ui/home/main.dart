@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Notebook'),
       ),
-      body: const _NoteListWidget(),
+      body: const _NoteList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _navigateToAddNotePage(context),
         tooltip: "Add note",
@@ -29,8 +29,8 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class _NoteListWidget extends StatelessWidget {
-  const _NoteListWidget();
+class _NoteList extends StatelessWidget {
+  const _NoteList();
 
   @override
   Widget build(BuildContext context) {
@@ -51,22 +51,32 @@ class _NoteListWidget extends StatelessWidget {
 
       return ListView.builder(
           itemCount: notes.length,
-          itemBuilder: (context, index) => _NoteWidget(note: notes[index]));
+          itemBuilder: (context, index) => _NoteListItem(note: notes[index]),
+          padding: const EdgeInsets.symmetric(vertical: 16));
     });
   }
 }
 
-class _NoteWidget extends StatelessWidget {
+class _NoteListItem extends StatelessWidget {
   final Note note;
 
-  const _NoteWidget({required this.note});
+  const _NoteListItem({required this.note});
 
   @override
   Widget build(BuildContext context) {
-    // TODO: render something more interesting
     return ListTile(
       title: Text(note.title),
-      subtitle: Text(note.content),
+      subtitle: Text(note.content.firstLine, overflow: TextOverflow.ellipsis),
     );
+  }
+}
+
+extension on String {
+  String get firstLine {
+    final i = indexOf("\n");
+    if (i == -1) {
+      return this;
+    }
+    return substring(0, i);
   }
 }
