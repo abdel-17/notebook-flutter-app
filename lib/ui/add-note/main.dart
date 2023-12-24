@@ -81,6 +81,7 @@ class _NoteFormState extends State<_NoteForm> {
 
   void _onSave() async {
     if (_saving) {
+      // Prevent multiple saves.
       return;
     }
 
@@ -92,10 +93,11 @@ class _NoteFormState extends State<_NoteForm> {
     try {
       _saving = true;
       final model = Provider.of<NoteModel>(context, listen: false);
-      await model.insert(Note(
+      final note = Note(
           title: _titleController.value.text,
           content: _noteController.value.text,
-          createdAt: DateTime.now()));
+          createdAt: DateTime.now());
+      await model.insertNote(note);
 
       // Navigate back if the widget is still mounted.
       if (mounted) {
