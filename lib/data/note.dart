@@ -13,6 +13,15 @@ class Note {
     required this.createdAt,
   });
 
+  factory Note.fromMap(Map<String, dynamic> map) {
+    return Note(
+      id: map['id'],
+      title: map['title'],
+      content: map['content'],
+      createdAt: DateTime.parse(map['created_at']),
+    );
+  }
+
   Map<String, dynamic> toMap() {
     final Map<String, dynamic> result = {
       'title': title,
@@ -24,14 +33,5 @@ class Note {
       result['id'] = id;
     }
     return result;
-  }
-
-  factory Note.fromMap(Map<String, dynamic> map) {
-    return Note(
-      id: map['id'],
-      title: map['title'],
-      content: map['content'],
-      createdAt: DateTime.parse(map['created_at']),
-    );
   }
 }

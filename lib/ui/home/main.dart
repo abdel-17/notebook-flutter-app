@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:notebook/data/database.dart';
+import 'package:notebook/data/model.dart';
 import 'package:notebook/data/note.dart';
+import 'package:notebook/ui/add-note/main.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -10,45 +12,47 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notebook'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: _NoteListWidget(),
+      body: const _NoteListWidget(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: navigate to "add note" page
-        },
+        onPressed: () => _navigateToAddNotePage(context),
+        tooltip: "Add note",
         child: const Icon(Icons.add),
       ),
     );
   }
+
+  void _navigateToAddNotePage(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => const AddNotePage(),
+    ));
+  }
 }
 
 class _NoteListWidget extends StatelessWidget {
+  const _NoteListWidget();
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: _getNotes(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final notes = snapshot.data!;
-            return ListView.builder(
-                itemBuilder: (context, i) => _NoteWidget(note: notes[i]),
-                itemCount: notes.length);
-          }
+    return Consumer<NoteModel>(builder: (context, model, child) {
+      final notes = model.notes;
+      if (notes == null) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      }
 
-          if (snapshot.hasError) {
-            final error = snapshot.error!;
-            debugPrint("Error: $error");
-            // TODO: handle error
-          }
+      if (notes.isEmpty) {
+        return Center(
+          child: Text("No notes found",
+              style: Theme.of(context).textTheme.titleMedium),
+        );
+      }
 
-          return const Center(child: CircularProgressIndicator());
-        });
-  }
-
-  Future<List<Note>> _getNotes() async {
-    final dao = await Dao.instance;
-    return dao.getNotes();
+      return ListView.builder(
+          itemCount: notes.length,
+          itemBuilder: (context, index) => _NoteWidget(note: notes[index]));
+    });
   }
 }
 

@@ -22,27 +22,6 @@ class _NotebookDatabase {
         created_at TEXT
       )
     ''');
-
-    // TODO: remove sample data once "add note" functionality is added.
-    final sampleData = [
-      Note(
-        id: 1,
-        title: 'Note 1',
-        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-        createdAt: DateTime.now(),
-      ),
-      Note(
-        id: 2,
-        title: 'Note 2',
-        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-        createdAt: DateTime.now(),
-      ),
-    ];
-
-    for (final sample in sampleData) {
-      await db.insert(Note.tableName, sample.toMap(),
-          conflictAlgorithm: ConflictAlgorithm.replace);
-    }
   }
 }
 

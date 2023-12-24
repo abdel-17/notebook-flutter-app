@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:notebook/data/model.dart';
 import 'package:notebook/ui/home/main.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const App());
+  runApp(ChangeNotifierProvider(
+      create: (context) => NoteModel(), child: const App()));
 }
 
 class App extends StatelessWidget {
@@ -10,10 +13,12 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = ColorScheme.fromSeed(seedColor: Colors.deepPurple);
     return MaterialApp(
       title: 'Notebook',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: colorScheme,
+        appBarTheme: AppBarTheme(backgroundColor: colorScheme.inversePrimary),
         useMaterial3: true,
       ),
       home: const HomePage(),
