@@ -12,13 +12,10 @@ class NoteModel extends ChangeNotifier {
     revalidateTodos();
   }
 
-  Future<void> revalidateTodos({bool notifyListeners = true}) async {
+  Future<void> revalidateTodos() async {
     final dao = await Dao.instance;
     _notes = await dao.getNotes();
-
-    if (notifyListeners) {
-      this.notifyListeners();
-    }
+    notifyListeners();
   }
 
   UnmodifiableListView<Note>? get notes {

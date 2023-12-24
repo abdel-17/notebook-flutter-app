@@ -46,10 +46,16 @@ class _NoteList extends StatelessWidget {
         );
       }
 
+      if (notes.isEmpty) {
+        return const Center(
+          child: Text("No notes found"),
+        );
+      }
+
       return ListView.builder(
           itemCount: notes.length,
           itemBuilder: (context, index) => _NoteListItem(note: notes[index]),
-          padding: const EdgeInsets.symmetric(vertical: 16));
+          padding: const EdgeInsets.all(16));
     });
   }
 }
@@ -61,35 +67,28 @@ class _NoteListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-        key: ValueKey(note.id),
-        direction: DismissDirection.endToStart,
-        confirmDismiss: (direction) => _deleteNote(context),
-        background: Container(
-          color: Colors.red,
-          alignment: Alignment.centerRight,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: const Icon(Icons.delete, color: Colors.white),
-        ),
-        child: ListTile(
-          title:
-              Text(note.title, style: Theme.of(context).textTheme.titleMedium),
-          subtitle: Text(note.content.firstLine,
-              style: Theme.of(context).textTheme.bodyMedium,
-              overflow: TextOverflow.ellipsis),
-        ));
+    return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Dismissible(
+                key: ValueKey(note.id),
+                direction: DismissDirection.endToStart,
+                confirmDismiss: (direction) => _deleteNote(context),
+                onDismissed: (direction) => _onNoteDeleted(context),
+                background: Container(
+                  alignment: Alignment.centerRight,
+                  color: Colors.red,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: const Icon(Icons.delete, color: Colors.white),
+                ),
+                child: _NoteCard(note: note))));
   }
 
   Future<bool> _deleteNote(BuildContext context) async {
     try {
       final model = Provider.of<NoteModel>(context, listen: false);
       await model.deleteNote(id: note.id);
-      await model.revalidateTodos(
-          // If `notifyListeners` is `true`, the swipe animation doesn't work.
-          // This is because Flutter tries to rebuild the list in the middle
-          // of the animation. There is no need to even rebuild the list because
-          // the `Dismissible` widget already handles the removal of the item.
-          notifyListeners: false);
       return true;
     } catch (e) {
       debugPrint("Delete failed: $e");
@@ -97,6 +96,33 @@ class _NoteListItem extends StatelessWidget {
           const SnackBar(content: Text("Failed to delete note")));
       return false;
     }
+  }
+
+  Future<void> _onNoteDeleted(BuildContext context) async {
+    // TODO: handle errors
+    final model = Provider.of<NoteModel>(context, listen: false);
+    await model.revalidateTodos();
+  }
+}
+
+class _NoteCard extends StatelessWidget {
+  final Note note;
+
+  const _NoteCard({required this.note});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+        color: theme.colorScheme.surfaceVariant,
+        child: ListTile(
+          title: Text(note.title, style: theme.textTheme.titleMedium),
+          subtitle: Text(note.content.firstLine,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant
+              ),
+              overflow: TextOverflow.ellipsis),
+        ));
   }
 }
 
