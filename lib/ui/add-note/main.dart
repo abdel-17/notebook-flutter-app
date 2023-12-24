@@ -94,12 +94,14 @@ class _NoteFormState extends State<_NoteForm> {
 
     try {
       _saving = true;
+
       final model = Provider.of<NoteModel>(context, listen: false);
       final note = Note(
           title: _titleController.value.text,
           content: _noteController.value.text,
           createdAt: DateTime.now());
       await model.insertNote(note);
+      await model.revalidateTodos();
 
       // Navigate back if the widget is still mounted.
       if (mounted) {

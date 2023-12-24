@@ -8,18 +8,17 @@ class NoteModel extends ChangeNotifier {
   List<Note>? _notes;
 
   NoteModel() {
-    fetchTodos();
-  }
-
-  Future<void> fetchTodos() async {
     // TODO: handle errors
-    final dao = await Dao.instance;
-    _fetchTodos(dao);
+    revalidateTodos();
   }
 
-  Future<void> _fetchTodos(Dao dao) async {
+  Future<void> revalidateTodos({bool notifyListeners = true}) async {
+    final dao = await Dao.instance;
     _notes = await dao.getNotes();
-    notifyListeners();
+
+    if (notifyListeners) {
+      this.notifyListeners();
+    }
   }
 
   UnmodifiableListView<Note>? get notes {
@@ -33,12 +32,15 @@ class NoteModel extends ChangeNotifier {
   Future<void> insertNote(Note note) async {
     final dao = await Dao.instance;
     await dao.insertNote(note);
-    _fetchTodos(dao);
   }
 
   Future<void> updateNote(Note note) async {
     final dao = await Dao.instance;
     await dao.updateNote(note);
-    _fetchTodos(dao);
+  }
+
+  Future<void> deleteNote({required int id}) async {
+    final dao = await Dao.instance;
+    await dao.deleteNote(id: id);
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:notebook/data/database.dart';
 import 'package:notebook/data/model.dart';
 import 'package:notebook/data/note.dart';
 import 'package:notebook/ui/add-note/main.dart';
@@ -47,13 +46,6 @@ class _NoteList extends StatelessWidget {
         );
       }
 
-      if (notes.isEmpty) {
-        return Center(
-          child: Text("No notes found",
-              style: Theme.of(context).textTheme.bodyLarge),
-        );
-      }
-
       return ListView.builder(
           itemCount: notes.length,
           itemBuilder: (context, index) => _NoteListItem(note: notes[index]),
@@ -90,8 +82,13 @@ class _NoteListItem extends StatelessWidget {
 
   Future<bool> _deleteNote(BuildContext context) async {
     try {
-      final dao = await Dao.instance;
-      await dao.deleteNote(id: note.id);
+      final model = Provider.of<NoteModel>(context, listen: false);
+      await model.deleteNote(id: note.id);
+      await model.revalidateTodos(
+          // If `notifyListeners` is `true`, the swipe animation doesn't work.
+          // This is because Flutter tries to rebuild the list in the middle
+          // of the animation.
+          notifyListeners: false);
       return true;
     } catch (e) {
       debugPrint("Delete failed: $e");
