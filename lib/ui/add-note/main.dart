@@ -47,6 +47,7 @@ class _NoteFormState extends State<_NoteForm> {
             TextFormField(
               autofocus: true,
               decoration: const InputDecoration.collapsed(hintText: "Title"),
+              style: Theme.of(context).textTheme.titleLarge,
               validator: _titleValidator,
               controller: _titleController,
             ),
@@ -54,6 +55,7 @@ class _NoteFormState extends State<_NoteForm> {
             TextFormField(
                 maxLines: null,
                 decoration: const InputDecoration.collapsed(hintText: "Note"),
+                style: Theme.of(context).textTheme.bodyLarge,
                 validator: _noteValidator,
                 controller: _noteController),
             const SizedBox(height: 24),
