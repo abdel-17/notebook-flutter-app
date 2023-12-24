@@ -45,7 +45,7 @@ class _NoteListWidget extends StatelessWidget {
       if (notes.isEmpty) {
         return Center(
           child: Text("No notes found",
-              style: Theme.of(context).textTheme.titleMedium),
+              style: Theme.of(context).textTheme.bodyLarge),
         );
       }
 

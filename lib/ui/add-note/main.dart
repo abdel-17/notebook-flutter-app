@@ -46,16 +46,14 @@ class _NoteFormState extends State<_NoteForm> {
           children: [
             TextFormField(
               autofocus: true,
-              decoration: const InputDecoration(
-                  label: Text("Title"), border: OutlineInputBorder()),
+              decoration: const InputDecoration.collapsed(hintText: "Title"),
               validator: _titleValidator,
               controller: _titleController,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             TextFormField(
                 maxLines: null,
-                decoration: const InputDecoration(
-                    label: Text("Note"), border: OutlineInputBorder()),
+                decoration: const InputDecoration.collapsed(hintText: "Note"),
                 validator: _noteValidator,
                 controller: _noteController),
             const SizedBox(height: 24),
