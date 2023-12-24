@@ -101,7 +101,7 @@ class _NoteFormState extends State<_NoteForm> {
           content: _noteController.value.text,
           createdAt: DateTime.now());
       await model.insertNote(note);
-      await model.revalidateTodos();
+      await model.revalidateNotes();
 
       // Navigate back if the widget is still mounted.
       if (mounted) {

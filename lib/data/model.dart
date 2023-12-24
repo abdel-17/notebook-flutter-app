@@ -9,10 +9,10 @@ class NoteModel extends ChangeNotifier {
 
   NoteModel() {
     // TODO: handle errors
-    revalidateTodos();
+    revalidateNotes();
   }
 
-  Future<void> revalidateTodos() async {
+  Future<void> revalidateNotes() async {
     final dao = await Dao.instance;
     _notes = await dao.getNotes();
     notifyListeners();

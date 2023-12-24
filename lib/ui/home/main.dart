@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:notebook/data/model.dart';
 import 'package:notebook/data/note.dart';
 import 'package:notebook/ui/add-note/main.dart';
+import 'package:notebook/ui/note-detail/main.dart';
 import 'package:provider/provider.dart';
 
 final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -101,7 +102,7 @@ class _NoteListItem extends StatelessWidget {
   Future<void> _onNoteDeleted(BuildContext context) async {
     // TODO: handle errors
     final model = Provider.of<NoteModel>(context, listen: false);
-    await model.revalidateTodos();
+    await model.revalidateNotes();
   }
 }
 
@@ -116,6 +117,7 @@ class _NoteCard extends StatelessWidget {
     return Container(
         color: theme.colorScheme.surfaceVariant,
         child: ListTile(
+          onTap: () => _navigateToNoteDetailPage(context),
           title: Text(note.title, style: theme.textTheme.titleMedium),
           subtitle: Text(note.content.firstLine,
               style: theme.textTheme.bodyMedium?.copyWith(
@@ -123,6 +125,12 @@ class _NoteCard extends StatelessWidget {
               ),
               overflow: TextOverflow.ellipsis),
         ));
+  }
+
+  void _navigateToNoteDetailPage(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => NoteDetailPage(note: note),
+    ));
   }
 }
 
