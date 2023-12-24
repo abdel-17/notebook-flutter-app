@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notebook/data/database.dart';
 import 'package:notebook/data/model.dart';
 import 'package:notebook/data/note.dart';
 import 'package:notebook/ui/add-note/main.dart';
@@ -69,7 +70,7 @@ class _NoteListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-        key: Key(note.id.toString()),
+        key: ValueKey(note.id),
         direction: DismissDirection.endToStart,
         confirmDismiss: (direction) => _deleteNote(context),
         background: Container(
@@ -89,8 +90,8 @@ class _NoteListItem extends StatelessWidget {
 
   Future<bool> _deleteNote(BuildContext context) async {
     try {
-      final model = Provider.of<NoteModel>(context, listen: false);
-      await model.deleteNote(id: note.id);
+      final dao = await Dao.instance;
+      await dao.deleteNote(id: note.id);
       return true;
     } catch (e) {
       debugPrint("Delete failed: $e");

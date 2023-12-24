@@ -41,10 +41,4 @@ class NoteModel extends ChangeNotifier {
     await dao.updateNote(note);
     _fetchTodos(dao);
   }
-
-  Future<void> deleteNote({required int id}) async {
-    final dao = await Dao.instance;
-    await dao.deleteNote(id: id);
-    _fetchTodos(dao);
-  }
 }
