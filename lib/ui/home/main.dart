@@ -87,7 +87,8 @@ class _NoteListItem extends StatelessWidget {
       await model.revalidateTodos(
           // If `notifyListeners` is `true`, the swipe animation doesn't work.
           // This is because Flutter tries to rebuild the list in the middle
-          // of the animation.
+          // of the animation. There is no need to even rebuild the list because
+          // the `Dismissible` widget already handles the removal of the item.
           notifyListeners: false);
       return true;
     } catch (e) {
