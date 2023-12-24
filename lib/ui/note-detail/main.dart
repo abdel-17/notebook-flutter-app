@@ -55,11 +55,13 @@ class _NoteDetailState extends State<_NoteDetail> {
               controller: _titleController,
             ),
             const SizedBox(height: 16),
-            TextField(
-              maxLines: null,
-              style: theme.textTheme.bodyLarge,
-              decoration: const InputDecoration.collapsed(hintText: "Note"),
-              controller: _contentController,
+            Expanded(
+              child: TextField(
+                maxLines: null,
+                style: theme.textTheme.bodyLarge,
+                decoration: const InputDecoration.collapsed(hintText: "Note"),
+                controller: _contentController,
+              ),
             )
           ],
         ));
