@@ -8,12 +8,16 @@ class NoteModel extends ChangeNotifier {
   List<Note>? _notes;
 
   NoteModel() {
-    fetch();
+    fetchTodos();
   }
 
-  Future<void> fetch() async {
+  Future<void> fetchTodos() async {
     // TODO: handle errors
     final dao = await Dao.instance;
+    _fetchTodos(dao);
+  }
+
+  Future<void> _fetchTodos(Dao dao) async {
     _notes = await dao.getNotes();
     notifyListeners();
   }
@@ -29,14 +33,18 @@ class NoteModel extends ChangeNotifier {
   Future<void> insertNote(Note note) async {
     final dao = await Dao.instance;
     await dao.insertNote(note);
-    _notes = await dao.getNotes();
-    notifyListeners();
+    _fetchTodos(dao);
   }
 
   Future<void> updateNote(Note note) async {
     final dao = await Dao.instance;
     await dao.updateNote(note);
-    _notes = await dao.getNotes();
-    notifyListeners();
+    _fetchTodos(dao);
+  }
+
+  Future<void> deleteNote({required int id}) async {
+    final dao = await Dao.instance;
+    await dao.deleteNote(id: id);
+    _fetchTodos(dao);
   }
 }

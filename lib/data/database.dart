@@ -76,4 +76,12 @@ class Dao {
       whereArgs: [note.id],
     );
   }
+
+  Future<void> deleteNote({required int id}) async {
+    await _db.delete(
+      Note.tableName,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
 }

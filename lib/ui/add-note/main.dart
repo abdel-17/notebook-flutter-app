@@ -106,6 +106,7 @@ class _NoteFormState extends State<_NoteForm> {
         Navigator.of(context).pop();
       }
     } catch (e) {
+      debugPrint("Save failed: $e");
       _scaffoldMessengerKey.currentState
           ?.showSnackBar(const SnackBar(content: Text("Failed to save note")));
     } finally {

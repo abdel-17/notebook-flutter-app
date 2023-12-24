@@ -4,22 +4,26 @@ import 'package:notebook/data/note.dart';
 import 'package:notebook/ui/add-note/main.dart';
 import 'package:provider/provider.dart';
 
+final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Notebook'),
-      ),
-      body: const _NoteList(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _navigateToAddNotePage(context),
-        tooltip: "Add note",
-        child: const Icon(Icons.add),
-      ),
-    );
+    return ScaffoldMessenger(
+        key: _scaffoldMessengerKey,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Notebook'),
+          ),
+          body: const _NoteList(),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => _navigateToAddNotePage(context),
+            tooltip: "Add note",
+            child: const Icon(Icons.add),
+          ),
+        ));
   }
 
   void _navigateToAddNotePage(BuildContext context) {
@@ -64,12 +68,36 @@ class _NoteListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(note.title, style: Theme.of(context).textTheme.titleMedium),
-      subtitle: Text(note.content.firstLine,
-          style: Theme.of(context).textTheme.bodyMedium,
-          overflow: TextOverflow.ellipsis),
-    );
+    return Dismissible(
+        key: Key(note.id.toString()),
+        direction: DismissDirection.endToStart,
+        confirmDismiss: (direction) => _deleteNote(context),
+        background: Container(
+          color: Colors.red,
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: const Icon(Icons.delete, color: Colors.white),
+        ),
+        child: ListTile(
+          title:
+              Text(note.title, style: Theme.of(context).textTheme.titleMedium),
+          subtitle: Text(note.content.firstLine,
+              style: Theme.of(context).textTheme.bodyMedium,
+              overflow: TextOverflow.ellipsis),
+        ));
+  }
+
+  Future<bool> _deleteNote(BuildContext context) async {
+    try {
+      final model = Provider.of<NoteModel>(context, listen: false);
+      await model.deleteNote(id: note.id);
+      return true;
+    } catch (e) {
+      debugPrint("Delete failed: $e");
+      _scaffoldMessengerKey.currentState?.showSnackBar(
+          const SnackBar(content: Text("Failed to delete note")));
+      return false;
+    }
   }
 }
 
