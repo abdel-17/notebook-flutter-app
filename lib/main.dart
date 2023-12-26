@@ -13,7 +13,8 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = ColorScheme.fromSeed(seedColor: Colors.deepPurple);
+    const seedColor = /* note app yellow color */ Color(0xffF9C80E);
+    final colorScheme = ColorScheme.fromSeed(seedColor: seedColor);
     return MaterialApp(
       title: 'Notebook',
       theme: ThemeData(
